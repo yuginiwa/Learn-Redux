@@ -14,8 +14,7 @@ var reducer = (state = stateDefault, action) => {
       return {
         ...state,
         searchText: action.searchText
-      }
-      break;
+      };
     default:
       return state;
   }

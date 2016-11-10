@@ -2,17 +2,58 @@ var redux = require("redux");
 
 console.log("Starting redux examples");
 
-var reducer = (state = {
-    name: 'Anonymous'
-}, action) => {
+var stateDefault = {
+    name: 'Anonymous',
+    hobbies: [],
+    movies: []
+};
+var nextHobbyId = 1;
+var nextMoviesId = 1;
+
+
+var reducer = (state = stateDefault, action) => {
     // state = state || {name: 'Anonymous'};
     switch (action.type) {
       case 'CHANGE_NAME':
         return {
           ...state,
           name: action.name
-        }
-        break;
+        };
+      case 'ADD_HOBBY':
+        return {
+          ...state,
+          hobbies: [
+            ...state.hobbies,
+            {
+              id: nextHobbyId++,
+              hobby: action.hobby
+            }
+          ]
+        };
+      case 'REMOVE_HOBBY':
+        return {
+          ...state,
+          hobbies: state.hobbies.filter(function (hobby) {
+            return hobby.id !== action.id;
+          })
+        };
+        case 'ADD_MOVIE':
+          return {
+            ...state,
+            movies: [
+              ...state.movies,
+              {
+                id: nextMoviesId++,
+                movie: action.movie,
+                genre: action.genre
+              }
+            ]
+          };
+        case 'REMOVE_MOVIE':
+          return {
+            ...state,
+            movies: state.movies.filter((movie) => movie.id !== action.id)
+          };
       default:
         return state;
     }
@@ -32,11 +73,45 @@ var unsubscribe = store.subscribe(() => {
 
   console.log('Name is', state.name);
   document.getElementById('app').innerHTML = state.name;
+
+  console.log('state', store.getState());
 });
 // unsubscribe();
 store.dispatch({
   type: 'CHANGE_NAME',
   name: 'Carl'
+});
+
+store.dispatch({
+  type: 'ADD_HOBBY',
+  hobby: 'Playing Games'
+});
+
+store.dispatch({
+  type: 'ADD_HOBBY',
+  hobby: 'Eat'
+});
+
+store.dispatch({
+  type: 'REMOVE_HOBBY',
+  id: 2
+});
+
+store.dispatch({
+  type: 'ADD_MOVIE',
+  movie: "Toy's Story 3",
+  genre: "Animation"
+});
+
+store.dispatch({
+  type: 'ADD_MOVIE',
+  movie: "The Buzz Light Year",
+  genre: "Animation"
+});
+
+store.dispatch({
+  type: 'REMOVE_MOVIE',
+  id: 1
 });
 
 store.dispatch({
